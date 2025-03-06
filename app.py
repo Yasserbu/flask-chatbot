@@ -19,19 +19,22 @@ user_details = {}
 previous_state = None
 state_history = []
 
+def reset_chatbot_state():
+    """Reset all chatbot state variables to their initial values."""
+    global chat_context, verification_stage, user_details, previous_state, state_history
+    chat_context = None
+    verification_stage = 0
+    user_details = {}
+    previous_state = None
+    state_history = []
+
 def chatbot_response(user_input):
     """Handle chatbot logic based on user input."""
     global chat_context, verification_stage, user_details, previous_state, state_history
 
     # Handle "Home" button
     if user_input.lower() == "home":
-        # Reset all chatbot state variables
-        chat_context = None
-        verification_stage = 0
-        user_details = {}
-        previous_state = None
-        state_history = []
-        # Return the main menu with the 4 clickable buttons
+        reset_chatbot_state()
         return "Main menu. Select an option.", ["Reset an application password", "Hardware help", "Need more assistance", "Ask for a resource"]
 
     # Handle "Back" button
@@ -188,6 +191,7 @@ def chat():
         return jsonify({'response': "Please provide a valid input.", 'options': []})
 
     response, options = chatbot_response(user_input)
+    print(f"Response: {response}, Options: {options}")  # Debugging line
     return jsonify({'response': response, 'options': options})
 
 if __name__ == '__main__':

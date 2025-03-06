@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Chatbot</title>
     <style>
-        
+        /* General Styles */
         body {
             font-family: 'Arial', sans-serif;
             margin: 0;
@@ -22,7 +22,7 @@
             overflow-x: hidden;
         }
 
-
+        /* Chatbox Container */
         #chatbox {
             width: 500px;
             max-width: 90%;
@@ -39,34 +39,32 @@
             overflow: hidden;
         }
 
-
-#chatbox::before {
-    content: '';
-    position: absolute;
-    top: 50%; 
-    left: 50%; 
-    width: 450px; 
-    height: 450px; 
-    background-image: url('static/images/ceblogo.png');
-    background-size: contain; 
-    background-position: center;
-    background-repeat: no-repeat; 
-    opacity: 0;
-    z-index: -1;
-    animation: fadeInOut 10s infinite;
-    transform: translate(-50%, -50%); 
-
-
-    filter: brightness(1);
-}
-
-        @keyframes fadeInOut {
-            0% { opacity: 0.1; }
-            50% { opacity: 0.3; }
-            100% { opacity: 0.1; }
+        /* Background Logo Animation */
+        #chatbox::before {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 450px;
+            height: 450px;
+            background-image: url('static/images/ceblogo.png'); /* Update path if needed */
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            opacity: 0.3; /* Initial opacity */
+            z-index: -1;
+            animation: fadeInOut 10s infinite;
+            transform: translate(-50%, -50%);
+            filter: brightness(1);
         }
 
+        @keyframes fadeInOut {
+            0% { opacity: 0.3; }
+            50% { opacity: 0.6; }
+            100% { opacity: 0.3; }
+        }
 
+        /* Messages Container */
         #messages {
             flex: 1;
             overflow-y: auto;
@@ -77,36 +75,34 @@
             border-radius: 10px;
         }
 
-
+        /* Input Area */
         #input-area {
             display: flex;
             gap: 10px;
             align-items: center;
         }
 
-#home-btn {
-    position: absolute;
-    bottom: 70px;
-    right: 20px; 
-    padding: 10px 20px;
-    background-color: #07d400;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    font-size: 14px;
-    transition: background-color 0.3s ease;
-    z-index: 1; 
-}
+        /* Home Button */
+        #home-btn {
+            position: absolute;
+            bottom: 70px;
+            right: 20px;
+            padding: 10px 20px;
+            background-color: #07d400;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background-color 0.3s ease;
+            z-index: 1;
+        }
 
-#home-btn:hover {
-    background-color: #0056b3;
-}
         #home-btn:hover {
             background-color: #0056b3;
         }
 
-
+        /* User Input Field */
         #user-input {
             flex: 1;
             padding: 12px;
@@ -122,7 +118,7 @@
             box-shadow: 0 0 10px rgba(0, 120, 212, 0.5);
         }
 
-
+        /* Send Button */
         #send-btn {
             padding: 12px 24px;
             background-color: #1565a2;
@@ -139,7 +135,7 @@
             transform: scale(1.1);
         }
 
-
+        /* Message Bubbles */
         .message {
             margin-bottom: 15px;
             padding: 10px;
@@ -177,14 +173,13 @@
             to { transform: translateX(0); opacity: 1; }
         }
 
-
+        /* Options Buttons */
         #options {
             display: flex;
             flex-wrap: wrap;
             margin-bottom: 15px;
             gap: 10px;
         }
-
 
         .option-button {
             background-color: white;
@@ -198,11 +193,12 @@
         }
 
         .option-button:hover {
-            background-color: #d4b400;
+            background-color: #c9d400;
             color: white;
             transform: scale(1.1);
         }
 
+        /* Scrollbar Styling */
         #messages::-webkit-scrollbar {
             width: 8px;
         }
@@ -221,7 +217,7 @@
             background: #0056b3;
         }
 
-
+        /* Responsive Design */
         @media (max-width: 768px) {
             #chatbox {
                 width: 100%;
@@ -270,7 +266,7 @@
         const sendBtn = document.getElementById('send-btn');
         const homeBtn = document.getElementById('home-btn');
 
-
+        // Add a message to the chatbox
         function addMessage(message, isUser) {
             const messageDiv = document.createElement('div');
             messageDiv.classList.add('message');
@@ -280,10 +276,11 @@
             chatbox.scrollTop = chatbox.scrollHeight;
         }
 
-
+        // Display options as buttons
         function displayOptions(options) {
-            optionsDiv.innerHTML = '';
+            optionsDiv.innerHTML = ''; // Clear previous options
             if (options && options.length > 0) {
+                optionsDiv.style.display = 'flex'; // Ensure the options container is visible
                 options.forEach(option => {
                     const button = document.createElement('button');
                     button.textContent = option;
@@ -292,11 +289,11 @@
                     optionsDiv.appendChild(button);
                 });
             } else {
-                optionsDiv.style.display = 'none'; 
+                optionsDiv.style.display = 'none'; // Hide the options container if no options are provided
             }
         }
 
-
+        // Send a message to the backend
         async function sendMessage(message) {
             if (message) {
                 addMessage(`You: ${message}`, true);
@@ -313,6 +310,7 @@
                         throw new Error("Failed to communicate with the server.");
                     }
                     const data = await response.json();
+                    console.log("Backend Response:", data);  // Debugging line
                     addMessage(`Chatbot: ${data.response}`, false);
                     displayOptions(data.options || []);
                 } catch (error) {
@@ -321,15 +319,15 @@
             }
         }
 
-
+        // Reset the chat to the main menu
         function resetChat() {
-            chatbox.innerHTML = ''; 
-            optionsDiv.innerHTML = '';
-            addMessage("Chatbot: Hello! How can I help you today?", false);
-            displayOptions(["Reset an application password", "Hardware help", "Need more assistance", "Ask for a resource"]);
+            chatbox.innerHTML = ''; // Clear the chat messages
+            optionsDiv.innerHTML = ''; // Clear the options
+            addMessage("Chatbot: Hello! How can I help you today?", false); // Add a welcome message
+            displayOptions(["Reset an application password", "Hardware help", "Need more assistance", "Ask for a resource"]); // Display main menu options
         }
 
-
+        // Event Listeners
         sendBtn.addEventListener('click', () => sendMessage(userInput.value));
         userInput.addEventListener('keypress', (e) => {
             if (e.key === 'Enter') {
@@ -337,60 +335,10 @@
             }
         });
 
-
         homeBtn.addEventListener('click', resetChat);
 
-
+        // Initialize the chat
         resetChat();
-
-
-        let isLoading = false;
-
-        function showLoadingIndicator() {
-            isLoading = true;
-            addMessage("Chatbot: Please wait...", false);
-        }
-
-        function hideLoadingIndicator() {
-            isLoading = false;
-            chatbox.removeChild(chatbox.lastElementChild); 
-        }
-
-
-        async function sendMessageWithLoading(message) {
-            if (message) {
-                addMessage(`You: ${message}`, true);
-                
-                userInput.value = '';
-                showLoadingIndicator();
-                try {
-                    const response = await fetch('/chat', {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify({ message }),
-                    });
-                    if (!response.ok) {
-                        throw new Error("Failed to communicate with the server.");
-                    }
-                    const data = await response.json();
-                    hideLoadingIndicator();
-                    addMessage(`Chatbot: ${data.response}`, false);
-                    displayOptions(data.options || []);
-                } catch (error) {
-                    hideLoadingIndicator();
-                    addMessage("Chatbot: An error occurred while processing your request.", false);
-                }
-            }
-        }
-
-        sendBtn.addEventListener('click', () => sendMessageWithLoading(userInput.value));
-        userInput.addEventListener('keypress', (e) => {
-            if (e.key === 'Enter') {
-                sendMessageWithLoading(userInput.value);
-            }
-        });
     </script>
 </body>
 </html>
