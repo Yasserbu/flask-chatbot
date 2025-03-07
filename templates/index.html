@@ -320,11 +320,30 @@
         }
 
         // Reset the chat to the main menu
-        function resetChat() {
-            chatbox.innerHTML = ''; // Clear the chat messages
-            optionsDiv.innerHTML = ''; // Clear the options
-            addMessage("Chatbot: Hello! How can I help you today?", false); // Add a welcome message
-            displayOptions(["Reset an application password", "Hardware help", "Need more assistance", "Ask for a resource"]); // Display main menu options
+        async function resetChat() {
+            try {
+                // Send "home" to the backend to reset the chatbot state
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: 'home' }),
+                });
+                if (!response.ok) {
+                    throw new Error("Failed to communicate with the server.");
+                }
+                const data = await response.json();
+                console.log("Backend Response:", data);  // Debugging line
+
+                // Clear the chat UI and display the main menu
+                chatbox.innerHTML = ''; // Clear the chat messages
+                optionsDiv.innerHTML = ''; // Clear the options
+                addMessage(`Chatbot: ${data.response}`, false); // Add the bot's response
+                displayOptions(data.options || []); // Display the main menu options
+            } catch (error) {
+                addMessage("Chatbot: An error occurred while resetting the chat.", false);
+            }
         }
 
         // Event Listeners

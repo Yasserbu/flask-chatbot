@@ -49,23 +49,17 @@ def chatbot_response(user_input):
                 verification_stage = 1
                 chat_context = "password_reset"
                 return "Select an application for password reset.", ["SAP", "FET", "MR App", "Naveo", "Back"]
-            elif previous_state == "SAP_locked":
-                verification_stage = 2
-                chat_context = "SAP"
-                return "Is your SAP account locked? (yes/no)", ["yes", "no", "Back"]
-            elif previous_state == "SAP_reset":
-                verification_stage = 3
-                chat_context = "SAP"
-                return "Do you need to reset your password? (yes/no)", ["yes", "no", "Back"]
-            elif previous_state == "SAP_email":
-                verification_stage = 4
-                chat_context = "SAP"
-                return "What is your email address?", ["Back"]
             elif previous_state == "hardware_options":
+                verification_stage = 0
+                chat_context = None
                 return "Select a type of hardware for assistance.", ["Mouse", "CPU", "Keyboard", "Desktop PC", "Laptop", "Back"]
             elif previous_state == "assistance_categories":
+                verification_stage = 0
+                chat_context = None
                 return "Please categorize your issue.", ["Application", "Hardware", "Administrative", "Other", "Back"]
             elif previous_state == "resource_topics":
+                verification_stage = 0
+                chat_context = None
                 return "Select a topic for resource assistance.", ["Application", "Mail", "Active Directory", "Back"]
         else:
             return "No previous state to return to.", []
@@ -79,14 +73,20 @@ def chatbot_response(user_input):
             state_history.append(previous_state)
             return "Select an application for password reset.", ["SAP", "FET", "MR App", "Naveo", "Back"]
         elif user_input == "Hardware help":
+            chat_context = "hardware_options"
+            verification_stage = 0
             previous_state = "main_menu"
             state_history.append(previous_state)
             return "Select a type of hardware for assistance.", ["Mouse", "CPU", "Keyboard", "Desktop PC", "Laptop", "Back"]
         elif user_input == "Need more assistance":
+            chat_context = "assistance_categories"
+            verification_stage = 0
             previous_state = "main_menu"
             state_history.append(previous_state)
             return "Please categorize your issue.", ["Application", "Hardware", "Administrative", "Other", "Back"]
         elif user_input == "Ask for a resource":
+            chat_context = "resource_topics"
+            verification_stage = 0
             previous_state = "main_menu"
             state_history.append(previous_state)
             return "Select a topic for resource assistance.", ["Application", "Mail", "Active Directory", "Back"]
@@ -146,13 +146,13 @@ def chatbot_response(user_input):
     elif verification_stage == 7 and chat_context == "SAP":
         return "Please contact the IT support team for further assistance.", []
 
-    elif previous_state == "hardware_options":
+    elif chat_context == "hardware_options":
         return f"You selected {user_input}. Please describe the issue you're facing.", ["Back"]
 
-    elif previous_state == "assistance_categories":
+    elif chat_context == "assistance_categories":
         return f"You selected {user_input}. Please provide further details about the issue.", ["Back"]
 
-    elif previous_state == "resource_topics":
+    elif chat_context == "resource_topics":
         return f"You selected {user_input}. Please provide details about the resource you need.", ["Back"]
 
     else:
